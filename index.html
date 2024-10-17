@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador de Repositorio GitHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General styles for a professional, sober look */
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            color: #2e3a46;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 550px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            color: #2e3a46;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        /* File list styling */
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .file-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid #eaeaea;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .file-list li:hover {
+            background-color: #f0f4f7;
+            transform: translateY(-2px);
+        }
+
+        .file-list li .name {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+        }
+
+        .file-list li .name img {
+            margin-right: 10px;
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .file-list li .size {
+            font-size: 14px;
+            color: #7a7a7a;
+        }
+
+        /* Back button styles */
+        .back-button {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2e3a46;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #3e4b58;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-button img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        /* Download button styling */
+        .download-link {
+            background-color: #2ecc71;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: background-color 0.2s ease;
+        }
+
+        .download-link:hover {
+            background-color: #27ae60;
+        }
+
+        /* Subtle transitions */
+        .file-list li {
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .file-list li:hover {
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Explorador de Repositorio</h1>
+        <ul id="file-list" class="file-list"></ul>
+    </div>
+
+    <!-- Back button at the bottom -->
+    <div id="back-button" class="back-button" style="display: none;">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/left.png" alt="Volver"> Volver
+    </div>
+
+    <script>
+        const apiBase = 'https://api.github.com/repos';
+        const rawBase = 'https://raw.githubusercontent.com';
+        const owner = 'slamonega';  // Cambiar por el usuario del repo
+        const repo = 'directorio';  // Cambiar por el nombre del repo
+        let currentPath = '';
+
+        // Formato de tamaño de archivo
+        function formatSize(size) {
+            if (size === null) return '-';
+            const units = ['B', 'KB', 'MB', 'GB'];
+            let i = 0;
+            while (size >= 1024 && i < units.length - 1) {
+                size /= 1024;
+                i++;
+            }
+            return `${size.toFixed(2)} ${units[i]}`;
+        }
+
+        // Obtener archivos del repo
+        async function fetchRepoFiles(path) {
+            const response = await fetch(`${apiBase}/${owner}/${repo}/contents/${path}`);
+            const files = await response.json();
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = '';  // Limpiar lista
+
+            files.forEach(file => {
+                const li = document.createElement('li');
+
+                const name = document.createElement('div');
+                name.className = 'name';
+
+                const icon = document.createElement('img');
+                icon.src = file.type === 'dir' ? 'https://img.icons8.com/ios-filled/50/2e3a46/folder-invoices.png' : 'https://img.icons8.com/ios-filled/50/2e3a46/file.png';
+                icon.alt = file.type;
+
+                const fileName = document.createElement('span');
+                fileName.textContent = file.name;
+
+                name.appendChild(icon);
+                name.appendChild(fileName);
+                li.appendChild(name);
+
+                const size = document.createElement('div');
+                size.className = 'size';
+                size.textContent = file.size ? formatSize(file.size) : '-';
+                li.appendChild(size);
+
+                // Si es carpeta, permitir navegación
+                if (file.type === 'dir') {
+                    li.addEventListener('click', () => {
+                        currentPath = `${path}/${file.name}`;
+                        fetchRepoFiles(currentPath);
+                    });
+                } else {
+                    // Si es archivo, agregar enlace de descarga
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = `${rawBase}/${owner}/${repo}/main/${path ? path + '/' : ''}${file.name}`;
+                    downloadLink.className = 'download-link';
+                    downloadLink.textContent = '⬇️ Descargar';
+                    li.appendChild(downloadLink);
+                }
+
+                fileList.appendChild(li);
+            });
+
+            // Mostrar botón de volver si no estamos en el directorio raíz
+            const backButton = document.getElementById('back-button');
+            if (path !== '') {
+                backButton.style.display = 'flex';
+                backButton.onclick = () => {
+                    currentPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+                    fetchRepoFiles(currentPath);
+                };
+            } else {
+                backButton.style.display = 'none';
+            }
+        }
+
+        // Cargar archivos iniciales
+        fetchRepoFiles(currentPath);
+    </script>
+</body>
+</html>
