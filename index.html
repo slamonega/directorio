@@ -20,6 +20,10 @@
             padding: 0.5rem 0;
             font-size: 0.95rem;
             margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow-x: auto;
+            display: flex;
+            align-items: center;
         }
 
         .breadcrumb-item + .breadcrumb-item::before {
@@ -81,45 +85,47 @@
             max-width: 800px;
         }
 
-        .download-link {
-            font-size: 1rem;
-            color: #007bff; /* Color de los enlaces */
-            text-decoration: none;
-        }
-
-        .download-link:hover {
-            text-decoration: underline;
-        }
-
         /* Para pantallas pequeñas */
         @media (max-width: 768px) {
             .list-group-item {
                 font-size: 1.1rem;
             }
         }
+
+        /* Bloque para mostrar contenido de README.md */
+        #readme-content {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            color: #333;
+        }
     </style>
 </head>
 <body>
 
     <!-- Barra de navegación (breadcrumb) -->
-
-
-    <!-- Lista de archivos siempre visible -->
-    <div class="container mt-3">
-        <img src="logo.jpg" alt="Descripción del logo" height="130">
-<div class="container-fluid">
+    <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb d-flex">
-                <li class="breadcrumb-item"><a href="#" onclick="navigateTo('')">Inicio</a> /</li>
+                <li class="breadcrumb-item"><a href="#" onclick="navigateTo('')">Inicio</a></li>
                 <span id="breadcrumb-dynamic"></span> <!-- Ruta dinámica -->
             </ol>
         </nav>
     </div>
 
-
+    <!-- Lista de archivos siempre visible -->
+    <div class="container mt-3">
         <ul id="file-list" class="list-group">
             <!-- Aquí se cargan los archivos y directorios -->
         </ul>
+    </div>
+
+    <!-- Contenido del README.md -->
+    <div class="container" id="readme-content">
+        <!-- Aquí se mostrará el contenido de README.md -->
     </div>
 
     <!-- Bootstrap JS -->
@@ -132,7 +138,7 @@
         const repo = 'directorio';  // Cambiar por el nombre del repo
         let currentPath = '';
 
-        const excludedFiles = ['index.html', 'readme.md'];
+        const excludedFiles = ['index.html', 'logo.jpg'];
 
         function formatSize(size) {
             if (size === null) return '-';
@@ -178,6 +184,10 @@
                     icon.className = "fas fa-folder text-secondary"; /* Color gris para carpetas */
                 } else {
                     icon.className = "fas fa-file-alt text-muted"; /* Color gris claro para archivos */
+                    li.addEventListener('click', () => {
+                        const encodedPath = encodeURIComponent(`${path ? path + '/' : ''}${file.name}`);
+                        window.location.href = `${rawBase}/${owner}/${repo}/main/${encodedPath}`;
+                    });
                 }
 
                 const fileName = document.createElement('span');
@@ -198,17 +208,20 @@
                         fetchRepoFiles(currentPath);
                     });
                     li.classList.add('cursor-pointer');
-                } else {
-                    const encodedPath = encodeURIComponent(`${path ? path + '/' : ''}${file.name}`);
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = `${rawBase}/${owner}/${repo}/main/${encodedPath}`;
-                    downloadLink.textContent = 'Descargar';
-                    downloadLink.className = 'download-link';
-                    li.appendChild(downloadLink);
                 }
 
                 fileList.appendChild(li);
             });
+
+            // Mostrar contenido del archivo README.md si existe
+            const readmeFile = files.find(file => file.name.toLowerCase() === 'readme.md');
+            if (readmeFile) {
+                const readmeResponse = await fetch(`${rawBase}/${owner}/${repo}/main/${readmeFile.path}`);
+                const readmeContent = await readmeResponse.text();
+                document.getElementById('readme-content').innerHTML = marked.parse(readmeContent);
+            } else {
+                document.getElementById('readme-content').innerHTML = '';  // Limpiar si no hay README.md
+            }
         }
 
         function navigateTo(path) {
@@ -218,6 +231,9 @@
 
         fetchRepoFiles(currentPath);
     </script>
+
+    <!-- Markdown parser (opcional, para formatear README.md) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 </body>
 </html>
