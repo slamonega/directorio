@@ -12,6 +12,7 @@
         body {
             background-color: #fff; /* Fondo blanco */
             color: #333; /* Texto oscuro para buen contraste */
+            margin: 0;
         }
 
         /* Breadcrumb styling */
@@ -96,9 +97,9 @@
         #readme-content {
             margin-top: 2rem;
             padding: 1rem;
-            background-color: #f9f9f9;
-            border: 1px solid #ccc;
-            border-radius: 0.25rem;
+            background-color: #fff; /* Fondo blanco */
+            border: none; /* Sin bordes */
+            border-radius: 0; /* Sin esquinas redondeadas */
             font-size: 1rem;
             color: #333;
         }
@@ -107,13 +108,16 @@
 <body>
 
     <!-- Barra de navegación (breadcrumb) -->
-    <div class="container-fluid">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb d-flex">
-                <li class="breadcrumb-item"><a href="#" onclick="navigateTo('')">Inicio</a></li>
-                <span id="breadcrumb-dynamic"></span> <!-- Ruta dinámica -->
-            </ol>
-        </nav>
+    <div class="container mt-3">
+        <img src="logo.jpg" alt="Descripción del logo" height="130">
+        <div class="container-fluid">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb d-flex">
+                    <li class="breadcrumb-item"><a href="#" onclick="navigateTo('')">Inicio</a></li>
+                    <span id="breadcrumb-dynamic"></span> <!-- Ruta dinámica -->
+                </ol>
+            </nav>
+        </div>
     </div>
 
     <!-- Lista de archivos siempre visible -->
@@ -138,7 +142,7 @@
         const repo = 'directorio';  // Cambiar por el nombre del repo
         let currentPath = '';
 
-        const excludedFiles = ['index.html', 'logo.jpg'];
+        const excludedFiles = ['index.html', 'logo.jpg', 'readme.md'];
 
         function formatSize(size) {
             if (size === null) return '-';
@@ -182,6 +186,10 @@
                 const icon = document.createElement('i');
                 if (file.type === 'dir') {
                     icon.className = "fas fa-folder text-secondary"; /* Color gris para carpetas */
+                    li.addEventListener('click', () => {
+                        currentPath = `${path}/${file.name}`;
+                        fetchRepoFiles(currentPath);
+                    });
                 } else {
                     icon.className = "fas fa-file-alt text-muted"; /* Color gris claro para archivos */
                     li.addEventListener('click', () => {
@@ -201,14 +209,6 @@
                 size.className = 'file-size';
                 size.textContent = file.size ? formatSize(file.size) : '-';
                 li.appendChild(size);
-
-                if (file.type === 'dir') {
-                    li.addEventListener('click', () => {
-                        currentPath = `${path}/${file.name}`;
-                        fetchRepoFiles(currentPath);
-                    });
-                    li.classList.add('cursor-pointer');
-                }
 
                 fileList.appendChild(li);
             });
