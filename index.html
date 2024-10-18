@@ -18,7 +18,7 @@
         .breadcrumb {
             background-color: transparent;
             padding: 0.5rem 0;
-            font-size: 1.2rem;
+            font-size: 0.95rem;
             margin-bottom: 0.5rem;
         }
 
@@ -102,17 +102,20 @@
 <body>
 
     <!-- Barra de navegación (breadcrumb) -->
-    <div class="container-fluid">
+
+
+    <!-- Lista de archivos siempre visible -->
+    <div class="container mt-3">
+<div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb d-flex">
-                <li class="breadcrumb-item"><a href="#" onclick="navigateTo('')">Inicio </a>/</li>
+                <li class="breadcrumb-item"><a href="#" onclick="navigateTo('')">Inicio</a> /</li>
                 <span id="breadcrumb-dynamic"></span> <!-- Ruta dinámica -->
             </ol>
         </nav>
     </div>
 
-    <!-- Lista de archivos siempre visible -->
-    <div class="container mt-3">
+
         <ul id="file-list" class="list-group">
             <!-- Aquí se cargan los archivos y directorios -->
         </ul>
