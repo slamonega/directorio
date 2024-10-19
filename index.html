@@ -17,13 +17,14 @@
 
         /* Breadcrumb styling */
         .breadcrumb {
+            display: flex; /* Asegura que los elementos estén en línea */
+            flex-wrap: nowrap; /* Evita que se vayan a una nueva línea */
             background-color: transparent;
             padding: 0.5rem 0;
             font-size: 0.95rem;
             margin-bottom: 0.5rem;
             white-space: nowrap;
-            overflow-x: auto;
-            display: flex;
+            overflow-x: auto; /* Permite scroll horizontal si es muy largo */
             align-items: center;
         }
 
@@ -107,133 +108,135 @@
 </head>
 <body>
 
-    <!-- Barra de navegación (breadcrumb) -->
-    <div class="container mt-3">
-        <img src="logo.jpg" alt="Descripción del logo" height="130">
-        <div class="container-fluid">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb d-flex">
-                    <li class="breadcrumb-item"><a href="#" onclick="navigateTo('')">Inicio</a></li>
-                    <span id="breadcrumb-dynamic"></span> <!-- Ruta dinámica -->
-                </ol>
-            </nav>
-        </div>
-    </div>
+<!-- Barra de navegación (breadcrumb) -->
+<div class="container mt-3">
+    <img src="logo.jpg" alt="Descripción del logo" height="130">
+    <nav aria-label="breadcrumb" class="container-fluid">
+        <ol class="breadcrumb d-flex">
+            <li class="breadcrumb-item">
+                <a href="#" onclick="navigateTo('')"><i class="fas fa-home me-1"></i>Inicio</a>
+            </li>
+            <li class="breadcrumb-item active" id="breadcrumb-dynamic" aria-current="page">
+                <!-- Último subdirectorio dinámico -->
+            </li>
+        </ol>
+    </nav>
+</div>
 
-    <!-- Lista de archivos siempre visible -->
-    <div class="container mt-3">
-        <ul id="file-list" class="list-group">
-            <!-- Aquí se cargan los archivos y directorios -->
-        </ul>
-    </div>
+<!-- Lista de archivos siempre visible -->
+<div class="container mt-3">
+    <ul id="file-list" class="list-group">
+        <!-- Aquí se cargan los archivos y directorios -->
+    </ul>
+</div>
 
-    <!-- Contenido del README.md -->
-    <div class="container" id="readme-content">
-        <!-- Aquí se mostrará el contenido de README.md -->
-    </div>
+<!-- Contenido del README.md -->
+<div class="container" id="readme-content">
+    <!-- Aquí se mostrará el contenido de README.md -->
+</div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        const apiBase = 'https://api.github.com/repos';
-        const rawBase = 'https://raw.githubusercontent.com';
-        const owner = 'slamonega';  // Cambiar por el usuario del repo
-        const repo = 'directorio';  // Cambiar por el nombre del repo
-        let currentPath = '';
+<script>
+    const apiBase = 'https://api.github.com/repos';
+    const rawBase = 'https://raw.githubusercontent.com';
+    const owner = 'slamonega';  // Cambiar por el usuario del repo
+    const repo = 'directorio';  // Cambiar por el nombre del repo
+    let currentPath = '';
 
-        const excludedFiles = ['index.html', 'logo.jpg', 'readme.md'];
+    const excludedFiles = ['index.html', 'logo.jpg', 'readme.md'];
 
-        function formatSize(size) {
-            if (size === null) return '-';
-            const units = ['B', 'KB', 'MB', 'GB'];
-            let i = 0;
-            while (size >= 1024 && i < units.length - 1) {
-                size /= 1024;
-                i++;
-            }
-            return `${size.toFixed(2)} ${units[i]}`;
+    function formatSize(size) {
+        if (size === null) return '-';
+        const units = ['B', 'KB', 'MB', 'GB'];
+        let i = 0;
+        while (size >= 1024 && i < units.length - 1) {
+            size /= 1024;
+            i++;
         }
+        return `${size.toFixed(2)} ${units[i]}`;
+    }
 
-        async function fetchRepoFiles(path) {
-            const response = await fetch(`${apiBase}/${owner}/${repo}/contents/${path}`);
-            const files = await response.json();
-            const fileList = document.getElementById('file-list');
-            const breadcrumbDynamic = document.getElementById('breadcrumb-dynamic');
-            fileList.innerHTML = '';  // Limpiar lista
-            breadcrumbDynamic.innerHTML = ''; // Limpiar ruta dinámica
+    async function fetchRepoFiles(path) {
+        const response = await fetch(`${apiBase}/${owner}/${repo}/contents/${path}`);
+        const files = await response.json();
+        const fileList = document.getElementById('file-list');
+        const breadcrumbDynamic = document.getElementById('breadcrumb-dynamic');
+        fileList.innerHTML = '';  // Limpiar lista
+        breadcrumbDynamic.innerHTML = ''; // Limpiar ruta dinámica
 
-            const filteredFiles = files.filter(file => !excludedFiles.includes(file.name.toLowerCase()));
+        const filteredFiles = files.filter(file => !excludedFiles.includes(file.name.toLowerCase()));
 
-            // Construir breadcrumb dinámico
-            const pathParts = path.split('/');
-            let cumulativePath = '';
-            pathParts.forEach((part, index) => {
-                if (part) {
-                    cumulativePath += (index > 0 ? '/' : '') + part;
-                    breadcrumbDynamic.innerHTML += `<li class="breadcrumb-item"><a href="#" onclick="navigateTo('${cumulativePath}')">${part}</a></li>`;
-                }
-            });
+        // Construir breadcrumb dinámico
+        const pathParts = path.split('/');
+        let cumulativePath = '';
+        pathParts.forEach((part, index) => {
+            if (part) {
+                cumulativePath += (index > 0 ? '/' : '') + part;
+                breadcrumbDynamic.innerHTML += `<li class="breadcrumb-item"><a href="#" onclick="navigateTo('${cumulativePath}')">${part}</a></li>`;
+            }
+        });
 
-            // Mostrar archivos y directorios directamente
-            filteredFiles.forEach(file => {
-                const li = document.createElement('li');
-                li.className = "list-group-item d-flex justify-content-between align-items-center file-item";
+        // Mostrar archivos y directorios directamente
+        filteredFiles.forEach(file => {
+            const li = document.createElement('li');
+            li.className = "list-group-item d-flex justify-content-between align-items-center file-item";
 
-                const fileInfo = document.createElement('div');
-                fileInfo.className = 'file-info d-flex align-items-center';
+            const fileInfo = document.createElement('div');
+            fileInfo.className = 'file-info d-flex align-items-center';
 
-                const icon = document.createElement('i');
-                if (file.type === 'dir') {
-                    icon.className = "fas fa-folder text-secondary"; /* Color gris para carpetas */
-                    li.addEventListener('click', () => {
-                        currentPath = `${path}/${file.name}`;
-                        fetchRepoFiles(currentPath);
-                    });
-                } else {
-                    icon.className = "fas fa-file-alt text-muted"; /* Color gris claro para archivos */
-                    li.addEventListener('click', () => {
-                        const encodedPath = encodeURIComponent(`${path ? path + '/' : ''}${file.name}`);
-                        window.location.href = `${rawBase}/${owner}/${repo}/main/${encodedPath}`;
-                    });
-                }
-
-                const fileName = document.createElement('span');
-                fileName.textContent = file.name;
-
-                fileInfo.appendChild(icon);
-                fileInfo.appendChild(fileName);
-                li.appendChild(fileInfo);
-
-                const size = document.createElement('div');
-                size.className = 'file-size';
-                size.textContent = file.size ? formatSize(file.size) : '-';
-                li.appendChild(size);
-
-                fileList.appendChild(li);
-            });
-
-            // Mostrar contenido del archivo README.md si existe
-            const readmeFile = files.find(file => file.name.toLowerCase() === 'readme.md');
-            if (readmeFile) {
-                const readmeResponse = await fetch(`${rawBase}/${owner}/${repo}/main/${readmeFile.path}`);
-                const readmeContent = await readmeResponse.text();
-                document.getElementById('readme-content').innerHTML = marked.parse(readmeContent);
+            const icon = document.createElement('i');
+            if (file.type === 'dir') {
+                icon.className = "fas fa-folder text-secondary"; /* Color gris para carpetas */
+                li.addEventListener('click', () => {
+                    currentPath = `${path}/${file.name}`;
+                    fetchRepoFiles(currentPath);
+                });
             } else {
-                document.getElementById('readme-content').innerHTML = '';  // Limpiar si no hay README.md
+                icon.className = "fas fa-file-alt text-muted"; /* Color gris claro para archivos */
+                li.addEventListener('click', () => {
+                    const encodedPath = encodeURIComponent(`${path ? path + '/' : ''}${file.name}`);
+                    window.location.href = `${rawBase}/${owner}/${repo}/main/${encodedPath}`;
+                });
             }
+
+            const fileName = document.createElement('span');
+            fileName.textContent = file.name;
+
+            fileInfo.appendChild(icon);
+            fileInfo.appendChild(fileName);
+            li.appendChild(fileInfo);
+
+            const size = document.createElement('div');
+            size.className = 'file-size';
+            size.textContent = file.size ? formatSize(file.size) : '-';
+            li.appendChild(size);
+
+            fileList.appendChild(li);
+        });
+
+        // Mostrar contenido del archivo README.md si existe
+        const readmeFile = files.find(file => file.name.toLowerCase() === 'readme.md');
+        if (readmeFile) {
+            const readmeResponse = await fetch(`${rawBase}/${owner}/${repo}/main/${readmeFile.path}`);
+            const readmeContent = await readmeResponse.text();
+            document.getElementById('readme-content').innerHTML = marked.parse(readmeContent);
+        } else {
+            document.getElementById('readme-content').innerHTML = '';  // Limpiar si no hay README.md
         }
+    }
 
-        function navigateTo(path) {
-            currentPath = path;
-            fetchRepoFiles(path);
-        }
+    function navigateTo(path) {
+        currentPath = path;
+        fetchRepoFiles(path);
+    }
 
-        fetchRepoFiles(currentPath);
-    </script>
+    fetchRepoFiles(currentPath);
+</script>
 
-    <!-- Markdown parser (opcional, para formatear README.md) -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!-- Markdown parser (opcional, para formatear README.md) -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 </body>
 </html>
