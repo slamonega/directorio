@@ -1,3 +1,3 @@
-Una Comunidad de Aprendizaje alrededor de una Biblioteca.
+# Una Comunidad de Aprendizaje alrededor de una Biblioteca.
 
 Aquí, entre libros y sueños, el espíritu scout florece, recordándonos que cada página es un paso en el sendero de la amistad y el servicio.
