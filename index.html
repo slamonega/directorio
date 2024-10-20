@@ -11,31 +11,31 @@
     <style>
         body {
             background-color: #fff; /* Fondo blanco */
-            color: #333; /* Texto oscuro para buen contraste */
+            color: #6e20a0; /* Texto principal en color #6e20a0 */
             margin: 0;
         }
 
         /* Breadcrumb styling */
         .breadcrumb {
-            display: flex; /* Asegura que los elementos estén en línea */
-            flex-wrap: nowrap; /* Evita que se vayan a una nueva línea */
+            display: flex;
+            flex-wrap: nowrap;
             background-color: transparent;
             padding: 0.5rem 0;
             font-size: 0.95rem;
             margin-bottom: 0.5rem;
             white-space: nowrap;
-            overflow-x: auto; /* Permite scroll horizontal si es muy largo */
+            overflow-x: auto;
             align-items: center;
         }
 
         .breadcrumb-item + .breadcrumb-item::before {
-            content: '/'; /* Barra separadora entre directorios */
+            content: '/';
             padding: 0 8px;
-            color: #555;
+            color: #6e20a0; /* Separador en color #6e20a0 */
         }
 
         .breadcrumb-item a {
-            color: #555; /* Enlace gris oscuro */
+            color: #6e20a0; /* Enlaces en color #6e20a0 */
             text-decoration: none;
         }
 
@@ -46,41 +46,41 @@
         /* Lista de archivos y carpetas */
         .list-group-item {
             padding: 1rem;
-            font-size: 1.3rem; /* Tamaño grande para facilitar la lectura */
+            font-size: 1.3rem;
             border: none;
-            border-bottom: 1px solid #ccc; /* Línea sutil para separar */
+            border-bottom: 0px solid #6e20a0;
             cursor: pointer;
         }
 
         .list-group-item:hover {
-            background-color: #eee; /* Cambio de color al pasar el ratón */
+            background-color: #eee; /* Fondo al pasar el ratón */
         }
 
         .list-group-item i {
-            font-size: 2rem; /* Íconos grandes */
+            font-size: 2rem;
             margin-right: 1rem;
-            color: #666; /* Color gris para los íconos */
+            color: #6e20a0; /* Íconos en color #6e20a0 */
         }
 
         .file-info {
             display: flex;
             align-items: center;
-            max-width: 70%; /* Limitar ancho de nombre de archivo */
+            max-width: 70%;
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; /* Nombres largos con puntos suspensivos */
+            text-overflow: ellipsis;
         }
 
         .file-info span {
             font-weight: bold;
-            color: #444; /* Texto en gris oscuro */
+            color: #6e20a0; /* Texto de archivos en color #6e20a0 */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .file-size {
-            color: #777; /* Tamaño de archivo en gris claro */
+            color: #6e20a0; /* Tamaño de archivo en color #6e20a0 */
         }
 
         .container {
@@ -98,11 +98,11 @@
         #readme-content {
             margin-top: 2rem;
             padding: 1rem;
-            background-color: #fff; /* Fondo blanco */
-            border: none; /* Sin bordes */
-            border-radius: 0; /* Sin esquinas redondeadas */
+            background-color: #fff;
+            border: none;
+            border-radius: 0;
             font-size: 1rem;
-            color: #333;
+            color: #6e20a0; /* Texto de README.md en color #6e20a0 */
         }
     </style>
 </head>
@@ -114,7 +114,7 @@
     <nav aria-label="breadcrumb" class="container-fluid">
         <ol class="breadcrumb d-flex">
             <li class="breadcrumb-item">
-                <a href="#" onclick="navigateTo('')"><i class="fas fa-home me-1"></i>Inicio</a>
+                <a href="#" onclick="navigateTo('')"><i class="fas fa-home me-1" style="color:#6e20a0;"></i>Inicio</a> <!-- Icono con color #6e20a0 -->
             </li>
             <li class="breadcrumb-item active" id="breadcrumb-dynamic" aria-current="page">
                 <!-- Último subdirectorio dinámico -->
@@ -188,13 +188,15 @@
 
             const icon = document.createElement('i');
             if (file.type === 'dir') {
-                icon.className = "fas fa-folder text-secondary"; /* Color gris para carpetas */
+                icon.className = "fas fa-folder"; 
+                icon.style.color = '#6e20a0'; /* Color para carpetas */
                 li.addEventListener('click', () => {
                     currentPath = `${path}/${file.name}`;
                     fetchRepoFiles(currentPath);
                 });
             } else {
-                icon.className = "fas fa-file-alt text-muted"; /* Color gris claro para archivos */
+                icon.className = "fas fa-file-alt";
+                icon.style.color = '#6e20a0'; /* Color para archivos */
                 li.addEventListener('click', () => {
                     const encodedPath = encodeURIComponent(`${path ? path + '/' : ''}${file.name}`);
                     window.location.href = `${rawBase}/${owner}/${repo}/main/${encodedPath}`;
