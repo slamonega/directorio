@@ -1,3 +1,4 @@
 # Una Comunidad de Aprendizaje alrededor de una Biblioteca.
 
-Aquí, entre libros y sueños, el espíritu scout florece, recordándonos que cada página es un paso en el sendero de la amistad y el servicio.
+
+Aquí, entre libros y sueños, el espíritu scout florece, donde cada página es un paso en el sendero de la amistad y el servicio.
