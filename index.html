@@ -11,7 +11,7 @@
     <style>
         body {
             background-color: #fff; /* Fondo blanco */
-            color: #6e20a0; /* Texto principal en color #6e20a0 */
+            color: #000000; /* Texto principal en color #000000 */
             margin: 0;
         }
 
@@ -31,11 +31,11 @@
         .breadcrumb-item + .breadcrumb-item::before {
             content: '/';
             padding: 0 8px;
-            color: #6e20a0; /* Separador en color #6e20a0 */
+            color: #000000; /* Separador en color #000000 */
         }
 
         .breadcrumb-item a {
-            color: #6e20a0; /* Enlaces en color #6e20a0 */
+            color: #000000; /* Enlaces en color #000000 */
             text-decoration: none;
         }
 
@@ -48,7 +48,7 @@
             padding: 1rem;
             font-size: 1.3rem;
             border: none;
-            border-bottom: 0px solid #6e20a0;
+            border-bottom: 0px solid #000000;
             cursor: pointer;
         }
 
@@ -59,7 +59,7 @@
         .list-group-item i {
             font-size: 2rem;
             margin-right: 1rem;
-            color: #6e20a0; /* Íconos en color #6e20a0 */
+            color: #000000; /* Íconos en color #000000 */
         }
 
         .file-info {
@@ -73,14 +73,14 @@
 
         .file-info span {
             font-weight: bold;
-            color: #6e20a0; /* Texto de archivos en color #6e20a0 */
+            color: #000000; /* Texto de archivos en color #000000 */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .file-size {
-            color: #6e20a0; /* Tamaño de archivo en color #6e20a0 */
+            color: #000000; /* Tamaño de archivo en color #000000 */
         }
 
         .container {
@@ -102,7 +102,7 @@
             border: none;
             border-radius: 0;
             font-size: 1rem;
-            color: #6e20a0; /* Texto de README.md en color #6e20a0 */
+            color: #000000; /* Texto de README.md en color #000000 */
         }
     </style>
 </head>
@@ -114,7 +114,7 @@
     <nav aria-label="breadcrumb" class="container-fluid">
         <ol class="breadcrumb d-flex">
             <li class="breadcrumb-item">
-                <a href="#" onclick="navigateTo('')"><i class="fas fa-home me-1" style="color:#6e20a0;"></i>Inicio</a> <!-- Icono con color #6e20a0 -->
+                <a href="#" onclick="navigateTo('')"><i class="fas fa-home me-1" style="color:#000000;"></i>Inicio</a> <!-- Icono con color #000000 -->
             </li>
             <li class="breadcrumb-item active" id="breadcrumb-dynamic" aria-current="page">
                 <!-- Último subdirectorio dinámico -->
@@ -189,14 +189,14 @@
             const icon = document.createElement('i');
             if (file.type === 'dir') {
                 icon.className = "fas fa-folder"; 
-                icon.style.color = '#6e20a0'; /* Color para carpetas */
+                icon.style.color = '#000000'; /* Color para carpetas */
                 li.addEventListener('click', () => {
                     currentPath = `${path}/${file.name}`;
                     fetchRepoFiles(currentPath);
                 });
             } else {
                 icon.className = "fas fa-file-alt";
-                icon.style.color = '#6e20a0'; /* Color para archivos */
+                icon.style.color = '#000000'; /* Color para archivos */
                 li.addEventListener('click', () => {
                     const encodedPath = encodeURIComponent(`${path ? path + '/' : ''}${file.name}`);
                     window.location.href = `${rawBase}/${owner}/${repo}/main/${encodedPath}`;
